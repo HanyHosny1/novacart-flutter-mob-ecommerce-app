@@ -7,18 +7,13 @@ class CartService with ChangeNotifier {
   final ApiService _apiService = ApiService();
   final List<CartItem> _items = [];
 
-  // Public accessor for the cart items
   List<CartItem> get items => _items;
 
-  // Convenience getter for the total number of items in the cart
   int get itemCount => _items.fold(0, (sum, item) => sum + item.quantity);
 
-  // Convenience getter for the total price of all items
   double get totalAmount {
     return _items.fold(0.0, (sum, item) => sum + item.totalItemPrice);
   }
-
-  // --- Core Logic ---
 
   void addItem(Product product) {
     final existingIndex = _items.indexWhere(
@@ -26,15 +21,31 @@ class CartService with ChangeNotifier {
     );
 
     if (existingIndex >= 0) {
-      // If item already exists, increase quantity
       _items[existingIndex].quantity++;
     } else {
-      // If item is new, add it
       _items.add(CartItem(product: product, quantity: 1));
     }
-
-    // Notify all listeners (widgets) to rebuild
     notifyListeners();
+  }
+
+  // Helper method used by the + button in the UI
+  void addSingleItem(Product product) {
+    addItem(product);
+  }
+
+  // Helper method used by the - button in the UI
+  void removeSingleItem(int productId) {
+    final existingIndex = _items.indexWhere(
+      (item) => item.product.id == productId,
+    );
+    if (existingIndex >= 0) {
+      if (_items[existingIndex].quantity > 1) {
+        _items[existingIndex].quantity--;
+      } else {
+        _items.removeAt(existingIndex);
+      }
+      notifyListeners();
+    }
   }
 
   void removeItem(int productId) {
@@ -47,35 +58,57 @@ class CartService with ChangeNotifier {
     if (newQuantity > 0) {
       item.quantity = newQuantity;
     } else {
-      // If quantity is zero or less, remove the item
       removeItem(productId);
     }
     notifyListeners();
   }
 
-  // --- Checkout Logic ---
-
-  // Placeholder for moving order to 'My Orders'
+  // --- UPDATED CHECKOUT LOGIC ---
   Future<bool> checkout() async {
-    final productIds = _items.map((item) => item.product.id).toList();
-    final currentTotal = totalAmount; // Get the calculated total
+    if (_items.isEmpty) return false;
 
-    // 1. Simulate API call for checkout, passing the total amount
-    final success = await _apiService.checkoutCart(
-      productIds,
-      currentTotal,
-    ); // PASS TOTAL HERE
+    try {
+      // 1. Prepare the detailed order data
+      final orderData = {
+        'orderId': DateTime.now().millisecondsSinceEpoch.toString(),
+        'total': totalAmount,
+        'date': DateTime.now().toLocal().toString().split(
+          '.',
+        )[0], // Cleaner date format
+        'status': 'Processing',
+        'products': _items
+            .map(
+              (cartItem) => {
+                'quantity': cartItem.quantity,
+                'product': {
+                  'id': cartItem.product.id,
+                  'title': cartItem.product.title,
+                  'description': cartItem.product.description,
+                  'price': cartItem.product.price,
+                  'image': cartItem.product.image,
+                },
+              },
+            )
+            .toList(),
+      };
 
-    if (success) {
-      // 2. Simulate "time out message that order is done"
-      await Future.delayed(const Duration(milliseconds: 500));
+      // 2. Call the API service to save this detailed order
+      // We pass the orderData map so My Orders screen can read all details later
+      final success = await _apiService.saveDetailedOrder(orderData);
 
-      // 3. Order is done, clear the cart
-      _items.clear();
+      if (success) {
+        // 3. Simulate a short delay for the "processing" feel
+        await Future.delayed(const Duration(milliseconds: 500));
 
-      notifyListeners();
-      return true;
+        // 4. Clear the cart and update UI
+        _items.clear();
+        notifyListeners();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("Checkout Error: $e");
+      return false;
     }
-    return false;
   }
 }

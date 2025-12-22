@@ -7,8 +7,8 @@ const String kBaseUrl = 'https://fakestoreapi.com';
 class ApiService {
   static final List<Map<String, dynamic>> _localOrderHistory = [];
   int _orderCounter = 0;
-  // We no longer need _simulateDelay or _fakeProductsData
 
+  static final List<Map<String, dynamic>> _orders = [];
   // --- Products API: Fetch All ---
   Future<List<Product>> fetchAllProducts() async {
     final uri = Uri.parse('$kBaseUrl/products');
@@ -91,12 +91,33 @@ class ApiService {
     return true;
   }
 
-  // --- Order History API (FIXED: Now returns local order history) ---
-  Future<List<Map<String, dynamic>>> fetchMyOrders() async {
-    // 1. Simulate delay for fetching
-    await Future.delayed(const Duration(milliseconds: 500));
+  // This is called by CartService during checkout
+  Future<bool> saveDetailedOrder(Map<String, dynamic> orderData) async {
+    try {
+      // Simulate network delay
+      await Future.delayed(const Duration(milliseconds: 500));
 
-    // 2. Return the locally stored history instead of calling the Fake Store /carts endpoint
-    return _localOrderHistory;
+      // Save the order to our memory list
+      _orders.insert(
+        0,
+        orderData,
+      ); // insert(0, ...) puts newest orders at the top
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // This is called by MyOrdersScreen to show the list
+  Future<List<Map<String, dynamic>>> fetchMyOrders() async {
+    // Simulate network delay
+    await Future.delayed(const Duration(milliseconds: 500));
+    return _orders;
+  }
+
+  // This implements the delete logic for the Red Basket icon
+  Future<void> deleteOrder(String orderId) async {
+    _orders.removeWhere((order) => order['orderId'].toString() == orderId);
   }
 }
