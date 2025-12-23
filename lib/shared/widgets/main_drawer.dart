@@ -39,7 +39,7 @@ class MainDrawer extends StatelessWidget {
           }),
 
           // Wishlist (NEW)
-          _buildListTile(context, 'Wishlist', Icons.favorite_border, () {
+          _buildListTile(context, 'My Wishlist', Icons.favorite_border, () {
             Navigator.of(context).pop(); // Close drawer
             Navigator.of(
               context,

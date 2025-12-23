@@ -19,12 +19,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _current = 0;
   final CarouselSliderController _controller = CarouselSliderController();
-  // FIX 1: Variable to hold the product fetching future
   late Future<List<Product>> _productsFuture;
 
-  // Offer Banners data
   final List<Map<String, dynamic>> _offerBanners = const [
-    // ... (list is unchanged)
     {
       'title': '50% OFF SALE',
       'subtitle': 'All Electronics & Gadgets',
@@ -45,18 +42,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // FIX 2: Initialize the future here so it is only called once.
     _productsFuture = ApiService().fetchAllProducts();
   }
 
   @override
   Widget build(BuildContext context) {
-    // NOTE: ApiService is not instantiated here anymore, as it's used in initState
     return Scaffold(
       appBar: AppBar(
         title: const Text('NovaCart'),
         actions: [
-          // ... AppBar actions unchanged
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
@@ -82,13 +76,11 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Offer Carousel
           const SizedBox(height: 10),
           _buildOfferCarousel(),
           _buildPaginationDots(),
           const SizedBox(height: 10),
 
-          // 2. Section Title
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
@@ -102,7 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
           Expanded(
             child: FutureBuilder<List<Product>>(
-              // FIX 3: Use the memoized future
               future: _productsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

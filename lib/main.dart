@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:novacart/core/services/wishlist_service.dart';
 import 'package:novacart/features/my_orders/screens/my_orders_screen.dart';
 import 'package:novacart/features/profile/screens/add_payment_method_screen.dart';
 import 'package:novacart/features/profile/screens/change_password_screen.dart';
 import 'package:novacart/features/profile/screens/edit_profile_screen.dart';
 import 'package:novacart/features/profile/screens/payment_methods_screen.dart';
 import 'package:novacart/features/profile/screens/settings_screen.dart';
+import 'package:novacart/features/wishlist/screens/wishlist_screen.dart';
 import 'package:provider/provider.dart';
 import 'core/services/cart_service.dart';
 import 'features/home/screens/home_screen.dart';
@@ -21,6 +23,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => CartService()),
+        ChangeNotifierProvider(create: (_) => WishlistService()),
         ChangeNotifierProvider(
           create: (context) => ThemeProvider(),
         ), // ADDED ThemeProvider
@@ -50,6 +53,7 @@ class NovaCartApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/cart': (context) => const CartScreen(),
         '/my-orders': (context) => const MyOrdersScreen(),
+        '/wishlist': (ctx) => const WishlistScreen(),
         '/settings': (ctx) => const SettingsScreen(),
         // '/edit-profile': (ctx) => const EditProfileScreen(),
         '/change-password': (ctx) => const ChangePasswordScreen(),
