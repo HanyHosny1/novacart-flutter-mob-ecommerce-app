@@ -8,6 +8,7 @@ import 'package:novacart/shared/widgets/product_search_delegate.dart';
 import 'package:provider/provider.dart';
 import 'package:novacart/features/home/widgets/offer_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:novacart/features/home/screens/category_products_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<String>> _categoriesFuture;
   int _current = 0;
   final CarouselSliderController _controller = CarouselSliderController();
   late Future<List<Product>> _productsFuture;
@@ -39,10 +41,27 @@ class _HomeScreenState extends State<HomeScreen> {
     },
   ];
 
+  String _getCategoryImage(String category) {
+    switch (category.toLowerCase()) {
+      case "electronics":
+        return 'assets/images/electronics-category.jpg';
+      case "jewelery":
+        return 'assets/images/jewelery-category.jpg';
+      case "men's clothing":
+        return 'assets/images/mens-clothing-category.jpg';
+      case "women's clothing":
+        return 'assets/images/womens-clothing-category.jpg';
+      default:
+        // A fallback image if a new category is added to the API
+        return 'assets/images/electronics-category.jpg';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _productsFuture = ApiService().fetchAllProducts();
+    _categoriesFuture = ApiService().fetchCategories();
   }
 
   @override
@@ -79,6 +98,12 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 10),
           _buildOfferCarousel(),
           _buildPaginationDots(),
+
+          // --- NEW: Added Category Section here ---
+          const SizedBox(height: 10),
+          _buildCategorySection(),
+
+          // ----------------------------------------
           const SizedBox(height: 10),
 
           Padding(
@@ -184,6 +209,108 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       }).toList(),
+    );
+  }
+
+  Widget _buildCategorySection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Text(
+            'Shop by Category',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(
+          height: 145, // Increased height to provide room for text
+          child: FutureBuilder<List<String>>(
+            future: _categoriesFuture,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return const SizedBox();
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                itemCount: snapshot.data!.length,
+                itemBuilder: (ctx, i) {
+                  final cat = snapshot.data![i];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CategoryProductsScreen(categoryName: cat),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 95,
+                      margin: const EdgeInsets.only(
+                        right: 5,
+                        bottom: 8,
+                        top: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 6,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                        border: Border.all(color: Colors.grey.shade100),
+                      ),
+                      child: Column(
+                        // CHANGED: Use start alignment so images all sit at the same top position
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 12,
+                          ), // Fixed top spacing for all images
+                          SizedBox(
+                            width: 65,
+                            height: 65,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                _getCategoryImage(cat),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ), // Spacing between image and text
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: Text(
+                              cat.toUpperCase(),
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.7,
+                                height:
+                                    1.2, // Improves readability for 2-line text
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
