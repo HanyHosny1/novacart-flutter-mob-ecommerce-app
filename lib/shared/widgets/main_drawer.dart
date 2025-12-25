@@ -9,19 +9,39 @@ class MainDrawer extends StatelessWidget {
     return Drawer(
       child: Column(
         children: <Widget>[
-          // Drawer Header - App Branding
           Container(
-            height: 150,
+            height: 90,
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             alignment: Alignment.centerLeft,
-            color: kPrimaryColor,
-            child: Text(
-              'NovaCart',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: kSurfaceColor,
-                fontWeight: FontWeight.bold,
-              ),
+            color: const Color.fromARGB(255, 78, 44, 138),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'NovaCart',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: kSurfaceColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      'assets/images/novacart_logo.jpg',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 10),

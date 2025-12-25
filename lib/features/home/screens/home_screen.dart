@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:novacart/features/home/widgets/offer_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:novacart/features/home/screens/category_products_screen.dart';
+import 'package:novacart/shared/widgets/dynamic_searchBar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,12 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('NovaCart'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: ProductSearchDelegate());
-            },
-          ),
           Consumer<CartService>(
             builder: (_, cart, ch) => Badge(
               label: Text(cart.itemCount.toString()),
@@ -92,50 +87,51 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       drawer: const MainDrawer(),
 
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10),
-          _buildOfferCarousel(),
-          _buildPaginationDots(),
-
-          // --- NEW: Added Category Section here ---
-          const SizedBox(height: 10),
-          _buildCategorySection(),
-
-          // ----------------------------------------
-          const SizedBox(height: 10),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 8.0,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const DynamicSearchBar(),
+            const SizedBox(height: 10),
+            _buildOfferCarousel(),
+            _buildPaginationDots(),
+            const SizedBox(height: 10),
+            _buildCategorySection(),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
+              child: Text(
+                'Featured Products',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
             ),
-            child: Text(
-              'Featured Products',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-          ),
-
-          Expanded(
-            child: FutureBuilder<List<Product>>(
+            // 2. Remove Expanded and use FutureBuilder directly
+            FutureBuilder<List<Product>>(
               future: _productsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const SizedBox(
+                    height: 200,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
                 }
-
-                if (snapshot.hasError) {
+                if (snapshot.hasError)
                   return Center(child: Text('Error: ${snapshot.error}'));
-                }
-
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                if (!snapshot.hasData || snapshot.data!.isEmpty)
                   return const Center(child: Text('No products found.'));
-                }
 
                 final products = snapshot.data!;
+
+                // 3. GridView settings for whole-page scrolling
                 return GridView.builder(
                   padding: const EdgeInsets.all(12.0),
+                  shrinkWrap:
+                      true, // Crucial: tells GridView to take only needed space
+                  physics:
+                      const NeverScrollableScrollPhysics(), // Crucial: disables Grid's own scrolling
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 0.7,
@@ -143,14 +139,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSpacing: 10,
                   ),
                   itemCount: products.length,
-                  itemBuilder: (ctx, i) {
-                    return ProductCard(product: products[i]);
-                  },
+                  itemBuilder: (ctx, i) => ProductCard(product: products[i]),
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -220,18 +214,18 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Text(
             'Shop by Category',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
         SizedBox(
-          height: 145, // Increased height to provide room for text
+          height: 145,
           child: FutureBuilder<List<String>>(
             future: _categoriesFuture,
             builder: (context, snapshot) {
               if (!snapshot.hasData) return const SizedBox();
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 itemCount: snapshot.data!.length,
                 itemBuilder: (ctx, i) {
                   final cat = snapshot.data![i];
@@ -246,58 +240,52 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Container(
-                      width: 95,
+                      width: 90,
                       margin: const EdgeInsets.only(
-                        right: 5,
+                        right: 10,
                         bottom: 8,
                         top: 2,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.05),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
                           ),
                         ],
                         border: Border.all(color: Colors.grey.shade100),
                       ),
                       child: Column(
-                        // CHANGED: Use start alignment so images all sit at the same top position
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const SizedBox(
-                            height: 12,
-                          ), // Fixed top spacing for all images
+                          const SizedBox(height: 12),
                           SizedBox(
-                            width: 65,
-                            height: 65,
+                            width: 60,
+                            height: 60,
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(8),
                               child: Image.asset(
                                 _getCategoryImage(cat),
                                 fit: BoxFit.cover,
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 12,
-                          ), // Spacing between image and text
+                          const SizedBox(height: 10),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
                             child: Text(
                               cat.toUpperCase(),
                               textAlign: TextAlign.center,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                fontSize: 10,
+                                fontSize:
+                                    9, // SLIGHTLY SMALLER: To fit narrower card
                                 fontWeight: FontWeight.bold,
-                                letterSpacing: 0.7,
-                                height:
-                                    1.2, // Improves readability for 2-line text
+                                letterSpacing: 0.5,
                               ),
                             ),
                           ),

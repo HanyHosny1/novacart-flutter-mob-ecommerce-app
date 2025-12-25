@@ -17,7 +17,6 @@ class OfferCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      // FIX: Remove margin to let the parent Padding control the spacing
       child: Container(
         decoration: BoxDecoration(
           color: backgroundColor,
@@ -46,14 +45,13 @@ class OfferCard extends StatelessWidget {
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
-                  // Action: Navigate to an offers page or category
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Tapped on $title offer!')),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: kSurfaceColor, // Button background color
-                  foregroundColor: kPrimaryColor, // Button text color
+                  backgroundColor: kSurfaceColor,
+                  foregroundColor: kPrimaryColor,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 8,
