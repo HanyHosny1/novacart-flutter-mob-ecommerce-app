@@ -26,19 +26,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Map<String, dynamic>> _offerBanners = const [
     {
-      'title': '50% OFF SALE',
-      'subtitle': 'All Electronics & Gadgets',
+      'title': 'Mega Sale',
+      'subtitle': 'Shopping Discounts',
+      'color': Colors.blue,
+      'image': 'assets/images/novacart-shoppingDiscounts.png',
+    },
+    {
+      'title': 'Special Offer',
+      'subtitle': 'Limited Time Only',
+      'color': Colors.orange,
+      'image': 'assets/images/novacart-offer.png',
+    },
+    {
+      'title': 'New Arrivals',
+      'subtitle': 'Premium Footwear',
       'color': Colors.red,
+      'image': 'assets/images/novacart-shoes.jpeg',
     },
     {
-      'title': 'BEST SELLERS',
-      'subtitle': 'Top 10 items this week',
+      'title': 'Tech Savings',
+      'subtitle': 'Smart Televisions',
       'color': Colors.deepPurple,
-    },
-    {
-      'title': 'FREE SHIPPING',
-      'subtitle': 'On orders over \$100',
-      'color': Colors.green,
+      'image': 'assets/images/novacart-television.jpeg',
     },
   ];
 
@@ -176,6 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
             title: item['title'] as String,
             subtitle: item['subtitle'] as String,
             backgroundColor: item['color'] as Color,
+            imagePath: item['image'] as String, // Pass the image path here
           ),
         );
       },

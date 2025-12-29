@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
-import 'colors.dart'; // Import the colors file
+import 'colors.dart';
 
 class AppTheme {
-  // Define the light theme (UNCHANGED)
   static ThemeData lightTheme = ThemeData(
-    // Global Colors
     primaryColor: kPrimaryColor,
     colorScheme: ColorScheme.light(
-      primary: kPrimaryColor, // Standard use of primary color
-      secondary: kAccentColor, // Standard use of accent color
+      primary: kPrimaryColor,
+      secondary: kAccentColor,
       background: kBackgroundColor,
-      surface: kSurfaceColor, // Card and background color for light theme
+      surface: kSurfaceColor,
     ),
     scaffoldBackgroundColor: kBackgroundColor,
-    cardColor: kSurfaceColor, // Use white for cards
-    // AppBar Style
+    cardColor: kSurfaceColor,
     appBarTheme: const AppBarTheme(
-      backgroundColor: kSurfaceColor, // White AppBar
-      foregroundColor: kTextColor, // Dark icons/text
+      backgroundColor: kSurfaceColor,
+      foregroundColor: kTextColor,
       elevation: 1.0,
       centerTitle: true,
     ),
 
-    // Text Theme
     textTheme: TextTheme(
       headlineLarge: TextStyle(
         fontSize: 32.0,
@@ -43,11 +39,10 @@ class AppTheme {
       bodyMedium: TextStyle(fontSize: 14.0, color: kSubtleTextColor),
     ),
 
-    // Button Styles
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: kSurfaceColor, // Text color: White
-        backgroundColor: kAccentColor, // Button background: Bright Red/Coral
+        foregroundColor: kSurfaceColor,
+        backgroundColor: kAccentColor,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -56,46 +51,38 @@ class AppTheme {
       ),
     ),
 
-    // Icon Theme
     iconTheme: const IconThemeData(color: kTextColor),
 
-    // Floating Action Button
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: kAccentColor,
       foregroundColor: kSurfaceColor,
     ),
   );
 
-  // Define the dark theme (NEWLY ADDED)
   static ThemeData darkTheme = ThemeData(
-    // Set brightness to Dark
     brightness: Brightness.dark,
 
-    // Global Colors
-    primaryColor:
-        kPrimaryColor, // Keep primary color the same for brand consistency
+    primaryColor: kPrimaryColor,
     colorScheme: ColorScheme.dark(
       primary: kPrimaryColor,
       secondary: kAccentColor,
-      background: Colors.black, // Deep background
-      surface: Colors.grey[900]!, // Dark surface for cards/containers
+      background: Colors.black,
+      surface: Colors.grey[900]!,
     ),
-    scaffoldBackgroundColor: Colors.black, // Dark background
-    cardColor: Colors.grey[900], // Dark card color
-    // AppBar Style (Dark/Black look)
+    scaffoldBackgroundColor: Colors.black,
+    cardColor: Colors.grey[900],
     appBarTheme: AppBarTheme(
-      backgroundColor: Colors.black, // Black AppBar
-      foregroundColor: Colors.white, // White icons/text
+      backgroundColor: Colors.black,
+      foregroundColor: Colors.white,
       elevation: 1.0,
       centerTitle: true,
     ),
 
-    // Text Theme (Text is light)
     textTheme: TextTheme(
       headlineLarge: TextStyle(
         fontSize: 32.0,
         fontWeight: FontWeight.bold,
-        color: Colors.white, // Light text
+        color: Colors.white,
       ),
       headlineMedium: TextStyle(
         fontSize: 24.0,
@@ -107,21 +94,14 @@ class AppTheme {
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
-      bodyLarge: TextStyle(
-        fontSize: 16.0,
-        color: Colors.white70,
-      ), // Slightly greyed body text
-      bodyMedium: TextStyle(
-        fontSize: 14.0,
-        color: Colors.grey,
-      ), // Subtle grey text
+      bodyLarge: TextStyle(fontSize: 16.0, color: Colors.white70),
+      bodyMedium: TextStyle(fontSize: 14.0, color: Colors.grey),
     ),
 
-    // Button Styles (Keep accent color consistent)
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white, // Text color: White
-        backgroundColor: kAccentColor, // Button background: Bright Red/Coral
+        foregroundColor: Colors.white,
+        backgroundColor: kAccentColor,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -130,10 +110,7 @@ class AppTheme {
       ),
     ),
 
-    // Icon Theme
     iconTheme: const IconThemeData(color: Colors.white),
-
-    // Floating Action Button
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: kAccentColor,
       foregroundColor: Colors.white,

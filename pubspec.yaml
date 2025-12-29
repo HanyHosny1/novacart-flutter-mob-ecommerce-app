@@ -76,6 +76,11 @@ flutter:
     - assets/images/jewelery-category.jpg
     - assets/images/mens-clothing-category.jpg
     - assets/images/womens-clothing-category.jpg
+    - assets/images/novacart-bazaar.png
+    - assets/images/novacart-shoppingDiscounts.png
+    - assets/images/novacart-offer.png
+    - assets/images/novacart-shoes.jpeg
+    - assets/images/novacart-television.jpeg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
